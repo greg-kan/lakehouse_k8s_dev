@@ -39,13 +39,15 @@ kubectl get pvc -n minio-dev
 kubectl get all -n minio-dev
 kubectl get pods -n minio-dev
 kubectl describe statefulset -n minio-dev
-kubectl describe pod datasaku-minio-0 -n minio-dev
+kubectl describe pod minio-0 -n minio-dev
 kubectl get svc -n minio-dev
 
 ### to open miniuo web - interface:
 http://10.106.91.195:6543/login
 minio
 minio123
+
+In the UI, create bucket called **iceberg**
 
 ## Appendix
 ### useful commands

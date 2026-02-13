@@ -49,6 +49,60 @@ minio123
 
 In the UI, create bucket called **iceberg**
 
+## 3. Postgres
+cd psql_simple
+
+kubectl create namespace psql-dev
+
+echo -n 'postgres' | base64 
+out: cG9zdGdyZXM=
+echo -n 'admin123' | base64
+out: YWRtaW4xMjM=
+
+kubectl create secret generic postgres-secret --from-literal=POSTGRES_PASSWORD=postgres -n psql-dev
+//or
+//kubectl apply -n psql-dev -f psql-secret.yaml
+
+checking:
+kubectl get secrets -n psql-dev
+kubectl describe secret postgres-secret -n psql-dev
+
+kubectl apply -n psql-dev -f psql-pv.yaml
+kubectl apply -n psql-dev -f psql-pvclaim.yaml 
+kubectl get pv
+kubectl get pvc -n psql-dev
+
+kubectl apply -n psql-dev -f statefulset.yaml
+kubectl apply -n psql-dev -f service.yaml
+[kubectl apply -n psql-dev -f service_alt.yaml]
+[kubectl get nodes -o wide]
+[and we can connect to postgres by node ip and port in service_alt.yaml]
+  
+kubectl get all -n psql-dev
+kubectl get pvc -n psql-dev
+kubectl get pods -n psql-dev
+kubectl get services -n psql-dev
+
+//to create client - pod and connect to db nessie:
+kubectl run -i --tty --rm psql-client --image=postgres:16-alpine -n psql-dev --env="PGPASSWORD=postgres" --command -- psql -h postgres -U postgres -d nessie
+
+--pgadmin---
+kubectl apply -n psql-dev  -f pgadmin-secret.yaml
+kubectl apply -n psql-dev  -f pgadmin-deployment.yaml
+kubectl apply -n psql-dev  -f pgadmin-service.yaml
+
+kubectl get svc -n psql-dev
+
+http://10.111.152.222:5432
+
+user admin@admin.com
+pass admin123
+postgres.psql-dev.svc.cluster.local
+db postgres
+user postgres
+pass postgres
+
+
 ## Appendix
 ### useful commands
 

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data-postgres-0
+  namespace: psql-dev
+spec:
+  accessModes:
+    - ReadWriteOnce # Один под на запись
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: standard # Используйте свою StorageClass

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data-postgres-0
+  labels:
+    app: postgres-app
+spec:
+  storageClassName: psql-manual
+  volumeName: postgres-volume-0
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 8Gi
+

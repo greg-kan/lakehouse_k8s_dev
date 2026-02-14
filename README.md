@@ -3,37 +3,49 @@ Contains instructions and config files to deploy Lakehouse cluster on Kubernetes
 
 ## 1. Cluster creation
 
-#export MINIKUBE_HOME=/data1/k8s
+```
+export MINIKUBE_HOME=/data1/k8s  # optional
 minikube start -p lakehouse-cluster-dev --memory 32768 --cpus 8
 minikube addons -p lakehouse-cluster-dev enable ingress 
 minikube addons -p lakehouse-cluster-dev enable ingress-dns
 minikube addons -p lakehouse-cluster-dev enable storage-provisioner
+```
 
-to check:
+Checking:
+```
 minikube ssh -p lakehouse-cluster-dev
 minikube profile list --detailed
 kubectl config current-context
+```
 
-### to create a tunnel:
+Tunnel creation:
+```
 minikube tunnel -p lakehouse-cluster-dev
-
+```
 
 ## 2. Minio
 
+```
 cd minio
 
 kubectl create namespace minio-dev
 
 kubectl apply -f minio-pv.yaml -n minio-dev
 kubectl apply -f minio-pvclaim.yaml -n minio-dev
+```
 
+```
 echo -n 'minio123' | base64
 kubectl apply -f minio-secret.yaml -n minio-dev
+```
 
+```
 kubectl apply -f minio-sts.yaml -n minio-dev
 kubectl apply -f minio-headless-service.yaml -n minio-dev
 kubectl apply -f minio-service.yaml -n minio-dev
+```
 
+```
 kubectl get pv
 kubectl get pvc -n minio-dev
 kubectl get all -n minio-dev
@@ -41,13 +53,15 @@ kubectl get pods -n minio-dev
 kubectl describe statefulset -n minio-dev
 kubectl describe pod minio-0 -n minio-dev
 kubectl get svc -n minio-dev
+```
 
-### to open miniuo web - interface:
+### To open miniuo web - interface:
+```
 http://10.106.91.195:6543/login
 minio
 minio123
-
-In the UI, create bucket called **iceberg**
+```
+### In the UI, create bucket called **iceberg**
 
 ## 3. Postgres
 cd psql_simple
@@ -114,11 +128,14 @@ Apply the secret
 ```
 kubectl apply -f nessie-secret.yaml -n nessie-dev
 ```
-Create PV and PVC
-//kubectl apply -n nessie-dev -f nessie-pv.yaml
-//kubectl apply -n nessie-dev -f nessie-pvclaim.yaml
-//kubectl get pv
-//kubectl get pvc -n nessie-dev
+
+Create PV and PVC (optional because the nessie will use postgresql as version store)
+```
+kubectl apply -n nessie-dev -f nessie-pv.yaml
+kubectl apply -n nessie-dev -f nessie-pvclaim.yaml
+kubectl get pv
+kubectl get pvc -n nessie-dev
+```
 
 Deploy Nessie
 ```
@@ -126,7 +143,7 @@ kubectl apply -n nessie-dev -f nessie-deployment.yaml
 kubectl apply -n nessie-dev -f nessie-service.yaml
 ```
 
-Chicking and troubleshooting
+Check and troubleshoot
 ```
 kubectl get deployments -n nessie-dev
 kubectl get pods -n nessie-dev -o wide

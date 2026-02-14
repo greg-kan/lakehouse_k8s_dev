@@ -29,31 +29,31 @@ minikube tunnel -p lakehouse-cluster-dev
 cd minio
 ```
 
-Create the namespace
+Create the namespace:
 ```
 kubectl create namespace minio-dev
 ```
 
-Create PV and PVC
+Create PV and PVC:
 ```
 kubectl apply -f minio-pv.yaml -n minio-dev
 kubectl apply -f minio-pvclaim.yaml -n minio-dev
 ```
 
-Apply the secret
+Apply the secret:
 ```
 echo -n 'minio123' | base64
 kubectl apply -f minio-secret.yaml -n minio-dev
 ```
 
-Deploy Minio
+Deploy Minio:
 ```
 kubectl apply -f minio-sts.yaml -n minio-dev
 kubectl apply -f minio-headless-service.yaml -n minio-dev
 kubectl apply -f minio-service.yaml -n minio-dev
 ```
 
-Check and troubleshoot
+Check and troubleshoot:
 ```
 kubectl get pv
 kubectl get pvc -n minio-dev
@@ -70,7 +70,7 @@ http://10.106.91.195:6543/login
 minio
 minio123
 ```
-In the UI, create bucket called **iceberg**
+In the UI, create bucket called **iceberg**.
 
 ## 3. Postgres
 
@@ -78,12 +78,12 @@ In the UI, create bucket called **iceberg**
 cd psql_simple
 ```
 
-Create the namespace
+Create the namespace:
 ```
 kubectl create namespace psql-dev
 ```
 
-Apply the secret
+Apply the secret:
 ```
 echo -n 'postgres' | base64 
 out: cG9zdGdyZXM=
@@ -99,13 +99,13 @@ kubectl create secret generic postgres-secret --from-literal=POSTGRES_PASSWORD=p
 # kubectl apply -n psql-dev -f psql-secret.yaml
 ```
 
-Checking:
+Check the secret:
 ```
 kubectl get secrets -n psql-dev
 kubectl describe secret postgres-secret -n psql-dev
 ```
 
-Create PV and PVC
+Create PV and PVC:
 ```
 kubectl apply -n psql-dev -f psql-pv.yaml
 kubectl apply -n psql-dev -f psql-pvclaim.yaml 
@@ -113,19 +113,19 @@ kubectl get pv
 kubectl get pvc -n psql-dev
 ```
 
-Deploy Postgres
+Deploy Postgres:
 ```
 kubectl apply -n psql-dev -f statefulset.yaml
 kubectl apply -n psql-dev -f service.yaml
 ```
 
-Optional deployment to be able connect to postgres by node ip and port 32432
+Optional deployment to be able connect to postgres by node ip and port 32432:
 ```
 kubectl apply -n psql-dev -f service_alt.yaml
 kubectl get nodes -o wide  # to determine the ip
 ```
  
-Checking and troubleshooting 
+Checking and troubleshooting:
 ```
 kubectl get all -n psql-dev
 kubectl get pvc -n psql-dev
@@ -138,19 +138,19 @@ To create client pod and connect to db nessie:
 kubectl run -i --tty --rm psql-client --image=postgres:16-alpine -n psql-dev --env="PGPASSWORD=postgres" --command -- psql -h postgres -U postgres -d nessie
 ```
 
-Deploy PGAdmin
+Deploy PGAdmin:
 ```
 kubectl apply -n psql-dev  -f pgadmin-secret.yaml
 kubectl apply -n psql-dev  -f pgadmin-deployment.yaml
 kubectl apply -n psql-dev  -f pgadmin-service.yaml
 ```
 
-Checking:
+Check:
 ```
 kubectl get svc -n psql-dev
 ```
 
-Accessing to Web UI
+Accessing to Web UI:
 ```
 http://10.111.152.222:5432
 
@@ -164,17 +164,17 @@ pass postgres
 
 ## 4. Nessie
 
-Create the namespace
+Create the namespace:
 ```
 kubectl create namespace nessie-dev
 ```
 
-Apply the secret
+Apply the secret:
 ```
 kubectl apply -f nessie-secret.yaml -n nessie-dev
 ```
 
-Create PV and PVC (optional because the nessie will use postgresql as version store)
+Create PV and PVC (optional because the nessie will use postgresql as version store):
 ```
 kubectl apply -n nessie-dev -f nessie-pv.yaml
 kubectl apply -n nessie-dev -f nessie-pvclaim.yaml
@@ -182,13 +182,13 @@ kubectl get pv
 kubectl get pvc -n nessie-dev
 ```
 
-Deploy Nessie
+Deploy Nessie:
 ```
 kubectl apply -n nessie-dev -f nessie-deployment.yaml
 kubectl apply -n nessie-dev -f nessie-service.yaml
 ```
 
-Check and troubleshoot
+Check and troubleshoot:
 ```
 kubectl get deployments -n nessie-dev
 kubectl get pods -n nessie-dev -o wide
@@ -196,7 +196,7 @@ kubectl get svc -n nessie-dev
 kubectl get all -n nessie-dev
 ```
 
-Access nessie UI
+Access nessie UI:
 ```
 http://10.102.200.61:6788
 ```

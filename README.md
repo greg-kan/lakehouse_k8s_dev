@@ -53,8 +53,6 @@ kubectl apply -f minio-headless-service.yaml -n minio-dev
 kubectl apply -f minio-service.yaml -n minio-dev
 ```
 
-
-
 Check and troubleshoot
 ```
 kubectl get pv
@@ -75,49 +73,85 @@ minio123
 In the UI, create bucket called **iceberg**
 
 ## 3. Postgres
+
+```
 cd psql_simple
+```
 
+Create the namespace
+```
 kubectl create namespace psql-dev
+```
 
+Apply the secret
+```
 echo -n 'postgres' | base64 
 out: cG9zdGdyZXM=
 echo -n 'admin123' | base64
 out: YWRtaW4xMjM=
+```
 
+```
 kubectl create secret generic postgres-secret --from-literal=POSTGRES_PASSWORD=postgres -n psql-dev
-//or
-//kubectl apply -n psql-dev -f psql-secret.yaml
+```
+```
+# or
+# kubectl apply -n psql-dev -f psql-secret.yaml
+```
 
-checking:
+Checking:
+```
 kubectl get secrets -n psql-dev
 kubectl describe secret postgres-secret -n psql-dev
+```
 
+Create PV and PVC
+```
 kubectl apply -n psql-dev -f psql-pv.yaml
 kubectl apply -n psql-dev -f psql-pvclaim.yaml 
 kubectl get pv
 kubectl get pvc -n psql-dev
+```
 
+Deploy Postgres
+```
 kubectl apply -n psql-dev -f statefulset.yaml
 kubectl apply -n psql-dev -f service.yaml
-[kubectl apply -n psql-dev -f service_alt.yaml]
-[kubectl get nodes -o wide]
-[and we can connect to postgres by node ip and port in service_alt.yaml]
-  
+```
+
+Optional deployment to be able connect to postgres by node ip and port 32432
+```
+kubectl apply -n psql-dev -f service_alt.yaml
+kubectl get nodes -o wide  # to determine the ip
+```
+ 
+Checking and troubleshooting 
+```
 kubectl get all -n psql-dev
 kubectl get pvc -n psql-dev
 kubectl get pods -n psql-dev
 kubectl get services -n psql-dev
+```
 
-//to create client - pod and connect to db nessie:
+To create client pod and connect to db nessie:
+```
 kubectl run -i --tty --rm psql-client --image=postgres:16-alpine -n psql-dev --env="PGPASSWORD=postgres" --command -- psql -h postgres -U postgres -d nessie
+```
 
---pgadmin---
+Deploy PGAdmin
+```
 kubectl apply -n psql-dev  -f pgadmin-secret.yaml
 kubectl apply -n psql-dev  -f pgadmin-deployment.yaml
 kubectl apply -n psql-dev  -f pgadmin-service.yaml
+```
 
+Checking:
+```
 kubectl get svc -n psql-dev
+```
 
+Accessing to Web UI
+```
 http://10.111.152.222:5432
 
 user admin@admin.com
@@ -126,7 +160,7 @@ postgres.psql-dev.svc.cluster.local
 db postgres
 user postgres
 pass postgres
-
+```
 
 ## 4. Nessie
 
@@ -169,13 +203,16 @@ http://10.102.200.61:6788
 
 
 ## 5. Spark
-cd spark
 
+```
+cd spark
+```
 
 
 ## Appendix
 ### useful commands
 
+```
 kubectl get endpoints spark -n spark-dev
 
 minikube -p lakehouse-cluster-dev image load alexmerced/spark35nb:latest
@@ -190,4 +227,5 @@ kubectl delete pod spark-f8fd87f4c-jbvth -n spark-dev --grace-period=0 --force
 kubectl delete pv nessie-volume -n nessie-dev --grace-period=0 --force
 
 echo "127.0.0.1 minio.kubernetes.net" | sudo tee -a /etc/hosts
+```
 

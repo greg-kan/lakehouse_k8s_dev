@@ -103,6 +103,48 @@ user postgres
 pass postgres
 
 
+## 4. Nessie
+
+Create the namespace
+```
+kubectl create namespace nessie-dev
+```
+
+Apply the secret
+```
+kubectl apply -f nessie-secret.yaml -n nessie-dev
+```
+Create PV and PVC
+//kubectl apply -n nessie-dev -f nessie-pv.yaml
+//kubectl apply -n nessie-dev -f nessie-pvclaim.yaml
+//kubectl get pv
+//kubectl get pvc -n nessie-dev
+
+Deploy Nessie
+```
+kubectl apply -n nessie-dev -f nessie-deployment.yaml
+kubectl apply -n nessie-dev -f nessie-service.yaml
+```
+
+Chicking and troubleshooting
+```
+kubectl get deployments -n nessie-dev
+kubectl get pods -n nessie-dev -o wide
+kubectl get svc -n nessie-dev
+kubectl get all -n nessie-dev
+```
+
+Access nessie UI
+```
+http://10.102.200.61:6788
+```
+
+
+## 5. Spark
+cd spark
+
+
+
 ## Appendix
 ### useful commands
 
@@ -117,6 +159,7 @@ docker pull alexmerced/spark35nb:latest
 
 kubectl delete namespace spark-dev
 kubectl delete pod spark-f8fd87f4c-jbvth -n spark-dev --grace-period=0 --force
+kubectl delete pv nessie-volume -n nessie-dev --grace-period=0 --force
 
 echo "127.0.0.1 minio.kubernetes.net" | sudo tee -a /etc/hosts
 

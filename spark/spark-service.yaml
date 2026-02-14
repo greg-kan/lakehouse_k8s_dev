@@ -1,0 +1,25 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: spark
+  namespace: spark-dev
+spec:
+  type: LoadBalancer
+  ports:
+    - name: webui
+      port: 8080
+      targetPort: 8080
+      #nodePort: 30008
+    - name: spark-master
+      port: 7077
+      targetPort: 7077
+      #nodePort: 30007
+    - name: jupyter
+      port: 8888
+      targetPort: 8888
+      #nodePort: 30888      
+  selector:
+    app: spark
+    
+
+      

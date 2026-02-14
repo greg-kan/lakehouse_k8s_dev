@@ -27,24 +27,35 @@ minikube tunnel -p lakehouse-cluster-dev
 
 ```
 cd minio
+```
 
+Create the namespace
+```
 kubectl create namespace minio-dev
+```
 
+Create PV and PVC
+```
 kubectl apply -f minio-pv.yaml -n minio-dev
 kubectl apply -f minio-pvclaim.yaml -n minio-dev
 ```
 
+Apply the secret
 ```
 echo -n 'minio123' | base64
 kubectl apply -f minio-secret.yaml -n minio-dev
 ```
 
+Deploy Minio
 ```
 kubectl apply -f minio-sts.yaml -n minio-dev
 kubectl apply -f minio-headless-service.yaml -n minio-dev
 kubectl apply -f minio-service.yaml -n minio-dev
 ```
 
+
+
+Check and troubleshoot
 ```
 kubectl get pv
 kubectl get pvc -n minio-dev
@@ -55,13 +66,13 @@ kubectl describe pod minio-0 -n minio-dev
 kubectl get svc -n minio-dev
 ```
 
-### To open miniuo web - interface:
+To open miniuo web - interface:
 ```
 http://10.106.91.195:6543/login
 minio
 minio123
 ```
-### In the UI, create bucket called **iceberg**
+In the UI, create bucket called **iceberg**
 
 ## 3. Postgres
 cd psql_simple

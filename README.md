@@ -243,6 +243,48 @@ http://10.102.200.61:8080
 http://10.102.200.61:8888
 ```
 
+## 6. Trino
+
+```
+cd trino
+```
+
+Create the namespace:
+```
+kubectl create namespace trino-dev
+```
+
+Add helm repository and update
+```
+helm repo add trino https://trinodb.github.io/charts
+helm repo update
+```
+
+Deploy trino:
+```
+helm upgrade --cleanup-on-fail \
+  --install lakehouse-trino trino/trino \
+  --namespace trino-dev \
+  --values catalog.yaml \
+  --values service-value.yaml
+```
+
+Troubleshoot:
+```
+kubectl get all -n trino-dev
+```
+
+Access 
+```
+./trino http://10.104.87.102:8765
+```
+
+Using:
+show catalogs;
+SHOW SCHEMAS FROM lakehouse;
+SHOW TABLES FROM lakehouse.sales;
+select * from lakehouse.sales.fashion_sales;
+exit
 
 ## Appendix
 ### useful commands

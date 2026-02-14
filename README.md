@@ -208,6 +208,41 @@ http://10.102.200.61:6788
 cd spark
 ```
 
+Check if the alexmerced/spark35nb:latest is present:
+```
+minikube -p lakehouse-cluster-dev image list | grep spark35nb
+```
+
+If not, execute the following:
+```
+eval $(minikube -p lakehouse-cluster-dev docker-env)
+docker pull alexmerced/spark35nb:latest
+```
+
+Create the namespace:
+```
+kubectl create namespace spark-dev
+```
+
+Deploy Spark:
+```
+kubectl create -f ./spark-deployment.yaml -n spark-dev
+kubectl create -f ./spark-service.yaml -n spark-dev
+```
+
+Check deployment:
+```
+kubectl get all -n spark-dev
+kubectl get pods -n spark-dev
+kubectl get services -n spark-dev
+```
+
+Access spark Web UI:
+```
+http://10.102.200.61:8080
+http://10.102.200.61:8888
+```
+
 
 ## Appendix
 ### useful commands

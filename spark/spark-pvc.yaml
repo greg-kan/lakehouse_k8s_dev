@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data-spark
+  namespace: spark-dev
+  labels:
+    app: spark
+spec:
+  storageClassName: spark-manual
+  volumeName: spark-volume
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi      

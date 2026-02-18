@@ -208,20 +208,30 @@ http://10.102.200.61:6788
 cd spark
 ```
 
-Check if the alexmerced/spark35nb:latest is present:
+Check if the image spark-jupyter:3.5.8 is present:
 ```
-minikube -p lakehouse-cluster-dev image list | grep spark35nb
+minikube -p lakehouse-cluster-dev image list
 ```
 
 If not, execute the following:
 ```
 eval $(minikube -p lakehouse-cluster-dev docker-env)
-docker pull alexmerced/spark35nb:latest
+docker build -t spark-jupyter:3.5.8 .
 ```
 
 Create the namespace:
 ```
 kubectl create namespace spark-dev
+```
+
+Create PV and PVC:
+```
+# kubectl apply -n spark-dev -f spark-pv.yaml
+# kubectl apply -n spark-dev -f spark-pvc.yaml
+kubectl apply -n spark-dev -f spark-pv1.yaml
+kubectl apply -n spark-dev -f spark-pvc1.yaml
+kubectl get pv
+kubectl get pvc -n spark-dev
 ```
 
 Deploy Spark:
@@ -290,6 +300,12 @@ exit
 ### useful commands
 
 ```
+kubectl port-forward deployment/spark-jupyter 8888:8888 -n spark-dev
+
+kubectl exec -it jupyter-6ff94dc8c4-pn8ps -n spark-dev -- /bin/bash
+
+kubectl logs jupyter-6ff94dc8c4-pn8ps -n spark-dev
+
 kubectl get endpoints spark -n spark-dev
 
 minikube -p lakehouse-cluster-dev image load alexmerced/spark35nb:latest

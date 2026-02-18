@@ -15,12 +15,27 @@ spec:
     spec:
       containers:
         - name: spark
-          image: alexmerced/spark35nb:latest
-          imagePullPolicy: IfNotPresent
+          image: spark-jupyter:3.5.8
+          # image: alexmerced/spark35nb:latest
+          # image: spark-hadoop:3.5.1
+          # imagePullPolicy: IfNotPresent
+          imagePullPolicy: Never
+          command: ["jupyter"]
+          args:
+            - lab
+            - "--ip=0.0.0.0"
+            - "--no-browser"
+            - "--allow-root"
+            - "--NotebookApp.token=''"
+            - "--NotebookApp.password=''"          
           ports:
             - containerPort: 8080  # Spark Master UI
             - containerPort: 7077  # Spark Master Port
+            - containerPort: 4040  # Spark App Port
             - containerPort: 8888  # Jupyter Notebook
+          volumeMounts:
+            - name: spark-storage
+              mountPath: /workspace   # Jupyter default notebook directory            
           env:
             - name: AWS_ACCESS_KEY_ID
               value: "minio"
@@ -30,3 +45,8 @@ spec:
               value: "us-east-1"
             - name: AWS_REGION
               value: "us-east-1"
+      volumes:
+        - name: spark-storage
+          persistentVolumeClaim:
+            claimName: data-spark
+            

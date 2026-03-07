@@ -16,6 +16,8 @@ Checking:
 minikube ssh -p lakehouse-cluster-dev
 minikube profile list --detailed
 kubectl config current-context
+kubectl cluster-info
+kubectl get nodes
 ```
 
 Tunnel creation:
@@ -37,7 +39,7 @@ kubectl create namespace minio-dev
 Create PV and PVC:
 ```
 kubectl apply -f minio-pv.yaml -n minio-dev
-kubectl apply -f minio-pvclaim.yaml -n minio-dev
+kubectl apply -f minio-pvc.yaml -n minio-dev
 ```
 
 Apply the secret:
@@ -75,7 +77,7 @@ In the UI, create bucket called **iceberg**.
 ## 3. Postgres
 
 ```
-cd psql_simple
+cd postgres
 ```
 
 Create the namespace:
@@ -119,10 +121,10 @@ kubectl apply -n psql-dev -f statefulset.yaml
 kubectl apply -n psql-dev -f service.yaml
 ```
 
-Optional deployment to be able connect to postgres by node ip and port 32432:
+Optional deployment to be able connect to postgres from local machine:
 ```
-kubectl apply -n psql-dev -f service_alt.yaml
-kubectl get nodes -o wide  # to determine the ip
+kubectl apply -n psql-dev -f service-externat.yaml
+
 ```
  
 Checking and troubleshooting:
@@ -320,5 +322,7 @@ kubectl delete pod spark-f8fd87f4c-jbvth -n spark-dev --grace-period=0 --force
 kubectl delete pv nessie-volume -n nessie-dev --grace-period=0 --force
 
 echo "127.0.0.1 minio.kubernetes.net" | sudo tee -a /etc/hosts
+
+kubectl get nodes -o wide  # to determine the ip
 ```
 

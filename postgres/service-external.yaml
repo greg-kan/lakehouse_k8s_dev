@@ -4,10 +4,12 @@ metadata:
   name: postgres-external
   namespace: psql-dev
 spec:
-  type: NodePort
+  #type: NodePort
+  type: LoadBalancer
   ports:
     - port: 5432
       targetPort: 5432
-      nodePort: 32432
+      #nodePort: 32432
   selector:
     app: postgres
+

@@ -179,7 +179,7 @@ kubectl apply -f nessie-secret.yaml -n nessie-dev
 Create PV and PVC (optional because the nessie will use postgresql as version store):
 ```
 kubectl apply -n nessie-dev -f nessie-pv.yaml
-kubectl apply -n nessie-dev -f nessie-pvclaim.yaml
+kubectl apply -n nessie-dev -f nessie-pvc.yaml
 kubectl get pv
 kubectl get pvc -n nessie-dev
 ```
@@ -209,6 +209,8 @@ http://10.102.200.61:6788
 ```
 cd spark
 ```
+### Case 1. Spark, PySpark, Jupyter in one pod. Driver, Master, Executors in one place
+
 
 Check if the image spark-jupyter:3.5.8 is present:
 ```
@@ -251,9 +253,47 @@ kubectl get services -n spark-dev
 
 Access spark Web UI:
 ```
-http://10.102.200.61:8080
 http://10.102.200.61:8888
 ```
+
+### Case 2. PySpark, Jupyter locally. Driver locally. Ececuters in k8s, one pod per Executer
+
+
+```
+cd rbac
+```
+
+Check if the image spark-custom:3.5.8 is present:
+```
+minikube -p lakehouse-cluster-dev image list
+```
+
+If not, execute the following:
+```
+eval $(minikube -p lakehouse-cluster-dev docker-env)
+docker build -t spark-custom:3.5.8 .
+```
+
+Create the namespace:
+```
+kubectl create namespace spark
+```
+
+```
+kubectl apply -f spark-rbac.yaml
+```
+
+Create python virtual environment:
+
+```
+mkvirtualenv pyspark-3.5.8
+workon pyspark-3.5.8
+```
+
+install PySpark, Jupyter, s3, postgres, icaberg, Nessie libraries into Env / into session
+
+Open Jupyter locally
+
 
 ## 6. Trino
 

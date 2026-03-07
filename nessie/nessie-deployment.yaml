@@ -18,8 +18,6 @@ spec:
           image: ghcr.io/projectnessie/nessie:latest
           imagePullPolicy: IfNotPresent
           env:
-          # - name: QUARKUS_HTTP_PORT
-          #   value: "6789"
           - name: NESSIE_VERSION_STORE_TYPE
             value: JDBC
           - name: NESSIE_VERSION_STORE_PERSIST_JDBC_DATASOURCE

@@ -338,10 +338,86 @@ SHOW TABLES FROM lakehouse.sales;
 select * from lakehouse.sales.fashion_sales;
 exit
 
+## 7. Dremio
+
+```
+cd dremio
+```
+
+Create the namespace:
+```
+kubectl create namespace dremio-dev
+```
+
+Deploy Dremio:
+```
+kubectl apply -f dremio-pvc.yaml
+kubectl apply -f dremio-deployment.yaml
+kubectl apply -f dremio-service.yaml
+```
+
+Check:
+
+```
+kubectl get all -n dremio-dev
+```
+
+Create an account:
+```
+dremio
+dremio123
+```
+
+Connection properties
+```
+nessie
+Nessie endpoint URI http://nessie-service.nessie-dev.svc.cluster.local:6788/api/v2
+iceberg
+minio
+minio123
+
+fs.s3a.path.style.access true
+fs.s3a.endpoint 10.107.38.26:6544
+dremio.s3.compat true
+```
+
+
+
+## Interfaces
+
+#### Minio
+```
+http://10.107.38.26:6543/login
+minio
+minio123
+```
+
+#### Trino
+```
+10.104.87.102:8765
+postgres
+```
+
+#### Spark
+1. Jupyter from inside K8S
+```
+http://10.102.231.143:8888
+```
+
+2. Jupyter from local VIRTUALENV
+```
+```
+
+#### Dremio
+
+
 ## Appendix
+
 ### useful commands
 
 ```
+docker context ls
+
 kubectl port-forward deployment/spark-jupyter 8888:8888 -n spark-dev
 
 kubectl exec -it jupyter-6ff94dc8c4-pn8ps -n spark-dev -- /bin/bash

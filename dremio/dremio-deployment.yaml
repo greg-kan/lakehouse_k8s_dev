@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dremio
+  namespace: dremio-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dremio
+  template:
+    metadata:
+      labels:
+        app: dremio
+    spec:
+      containers:
+        - name: dremio
+          image: dremio/dremio-oss:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9047
+              name: web-ui
+            - containerPort: 31010
+              name: jdbc
+            - containerPort: 32010
+              name: flight
+          volumeMounts:
+            - name: dremio-data
+              mountPath: /opt/dremio/data              
+          resources:
+            requests:
+              memory: "4Gi"
+              cpu: "1"
+            limits:
+              memory: "8Gi"
+              cpu: "2"
+      volumes:
+        - name: dremio-data
+          persistentVolumeClaim:
+            claimName: dremio-data
